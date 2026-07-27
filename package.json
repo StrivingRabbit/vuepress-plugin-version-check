@@ -3,6 +3,10 @@
 	"version": "1.0.0",
 	"description": "VuePress document update checker",
 	"main": "lib/index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/StrivingRabbit/vuepress-plugin-version-check"
+	},
 	"scripts": {
 		"test": "node test/version-check.test.js",
 		"publish:patch": "npm version patch && npm publish",
