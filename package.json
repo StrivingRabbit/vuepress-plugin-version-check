@@ -1,0 +1,21 @@
+{
+	"name": "vuepress-plugin-version-check",
+	"version": "1.0.0",
+	"description": "VuePress document update checker",
+	"main": "lib/index.js",
+	"scripts": {
+		"test": "node test/version-check.test.js",
+		"publish:patch": "npm version patch && npm publish",
+		"publish:minor": "npm version minor && npm publish",
+		"publish:major": "npm version major && npm publish",
+		"postpublish": "cnpm sync vuepress-plugin-version-check"
+	},
+	"keywords": [
+		"vuepress",
+		"plugin",
+		"version",
+		"update"
+	],
+	"author": "LXH",
+	"license": "ISC"
+}
