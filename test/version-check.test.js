@@ -21,7 +21,7 @@ const tests = [
 				assert.notStrictEqual(firstDefine, secondDefine);
 				assert.strictEqual(firstDefine.__VUEPRESS_VERSION_CHECK_BUILD_ID__, 'theme-build-id');
 				assert.strictEqual(secondDefine.__VUEPRESS_VERSION_CHECK_BUILD_ID__, 'theme-build-id');
-				assert.deepStrictEqual(plugin.globalUIComponents, ['VuepressVersionCheck']);
+				assert.strictEqual(plugin.globalUIComponents, undefined);
 				assert.ok(fs.existsSync(plugin.enhanceAppFiles));
 				assert.ok(fs.readFileSync(plugin.enhanceAppFiles, 'utf8').includes("Vue.component('VuepressVersionCheck'"));
 

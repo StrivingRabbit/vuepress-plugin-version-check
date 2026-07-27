@@ -55,7 +55,13 @@ export default {
 	},
 	mounted() {
 		const isDevelopment = typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development'
-		if (isDevelopment || !this.currentVersion || typeof window.fetch !== 'function') return
+		const themeConfig = this.$site && this.$site.themeConfig
+		if (
+			isDevelopment ||
+			(themeConfig && themeConfig.versionCheck === false) ||
+			!this.currentVersion ||
+			typeof window.fetch !== 'function'
+		) return
 
 		this._versionCheckerActive = true
 		this.checkVersion()
@@ -149,7 +155,7 @@ export default {
 	height 22px
 	margin 1px 10px 0 0
 	border-radius 50%
-	background #42b983
+	background $accentColor
 	color #fff
 	font-size 14px
 	font-weight 600
@@ -173,9 +179,9 @@ export default {
 
 .version-update__refresh
 	padding 5px 10px
-	border 1px solid #42b983
+	border 1px solid $accentColor
 	border-radius 4px
-	background #42b983
+	background $accentColor
 	color #fff
 	font-size 13px
 	line-height 1.2
@@ -187,7 +193,7 @@ export default {
 		background #359c74
 
 	&:focus-visible
-		outline 2px solid #42b983
+		outline 2px solid $accentColor
 		outline-offset 2px
 
 .version-update__close
@@ -210,7 +216,7 @@ export default {
 		color #324339
 
 	&:focus-visible
-		outline 2px solid #42b983
+		outline 2px solid $accentColor
 		outline-offset 1px
 
 .version-update-fade-enter-active,
