@@ -1,6 +1,6 @@
 {
 	"name": "vuepress-plugin-version-check",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "VuePress document update checker",
 	"main": "lib/index.js",
 	"repository": {
