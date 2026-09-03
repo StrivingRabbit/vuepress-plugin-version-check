@@ -8,7 +8,43 @@ function createTempDir() {
 	return fs.mkdtempSync(path.join(os.tmpdir(), 'vuepress-version-check-'));
 }
 
+function loadVersionHelpers() {
+	const file = path.resolve(__dirname, '../lib/VersionCheck.vue');
+	const source = fs.readFileSync(file, 'utf8');
+	const script = source.match(/<script>([\s\S]*?)<\/script>/)[1]
+		.split('export default {')[0];
+	return new Function(`${script}\nreturn { parseBuildTimestamp, isNewerVersion };`)();
+}
+
+const { parseBuildTimestamp, isNewerVersion } = loadVersionHelpers();
+
 const tests = [
+	{
+		name: 'compares valid build IDs by timestamp',
+		run() {
+			const current = '2026-09-03_07-53-15';
+			assert.ok(parseBuildTimestamp(current) > 0);
+			assert.strictEqual(isNewerVersion('2026-09-03_07-53-14', current), false);
+			assert.strictEqual(isNewerVersion(current, current), false);
+			assert.strictEqual(isNewerVersion('2026-09-03_07-53-16', current), true);
+		},
+	},
+	{
+		name: 'rejects invalid build timestamps',
+		run() {
+			assert.ok(Number.isNaN(parseBuildTimestamp('2026-02-30_07-53-15')));
+			assert.ok(Number.isNaN(parseBuildTimestamp('theme-build-id')));
+			assert.strictEqual(isNewerVersion('invalid-build-id', '2026-09-03_07-53-15'), false);
+			assert.strictEqual(isNewerVersion('2026-09-03_07-53-15', 'invalid-build-id'), false);
+		},
+	},
+	{
+		name: 'keeps string comparison for custom build IDs',
+		run() {
+			assert.strictEqual(isNewerVersion('new-build-id', 'old-build-id'), true);
+			assert.strictEqual(isNewerVersion('old-build-id', 'old-build-id'), false);
+		},
+	},
 	{
 		name: 'uses the supplied build ID for the client and version file',
 		run() {

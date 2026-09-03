@@ -38,6 +38,33 @@ function getVersionUrl(base) {
 	return `${normalizedBase.replace(/\/?$/, '/')}${VERSION_FILE}`
 }
 
+function parseBuildTimestamp(buildId) {
+	if (typeof buildId !== 'string') return NaN
+	const match = /^(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})$/.exec(buildId)
+	if (!match) return NaN
+
+	const parts = match.slice(1).map(Number)
+	const date = new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5])
+	if (
+		date.getFullYear() !== parts[0] ||
+		date.getMonth() !== parts[1] - 1 ||
+		date.getDate() !== parts[2] ||
+		date.getHours() !== parts[3] ||
+		date.getMinutes() !== parts[4] ||
+		date.getSeconds() !== parts[5]
+	) return NaN
+	return date.getTime()
+}
+
+function isNewerVersion(remoteVersion, currentVersion) {
+	const remoteTimestamp = parseBuildTimestamp(remoteVersion)
+	const currentTimestamp = parseBuildTimestamp(currentVersion)
+	if (Number.isFinite(remoteTimestamp) && Number.isFinite(currentTimestamp)) {
+		return remoteTimestamp > currentTimestamp
+	}
+	return !Number.isFinite(remoteTimestamp) && !Number.isFinite(currentTimestamp) && remoteVersion !== currentVersion
+}
+
 export default {
 	name: 'VuepressVersionCheck',
 	data() {
@@ -105,7 +132,7 @@ export default {
 							this._versionCheckerActive &&
 							version &&
 							typeof version.id === 'string' &&
-							version.id !== this.currentVersion &&
+							isNewerVersion(version.id, this.currentVersion) &&
 							version.id !== this.dismissedVersion
 						) {
 							this.remoteVersion = version.id
